@@ -1,17 +1,19 @@
+DROP TABLE equipe, uniforme, pais, jogador, partida, campo;
+
 CREATE TABLE IF NOT EXISTS public.equipe
 (
 	nome character varying (100) COLLATE pg_catalog."default",
 	nome_tecnico character varying (100) COLLATE pg_catalog."default",
-	/*pais character varying (100) COLLATE pg_catalog."default",*/
-	CONSTRAINT equipe_pkey PRIMARY KEY (nome)
-	/*CONSTRAINT equipe_fkey FOREIGN KEY (pais) REFERENCES pais (nome)*/
+	pais character varying (100) COLLATE pg_catalog."default",
+	CONSTRAINT equipe_pkey PRIMARY KEY (nome),
+	CONSTRAINT equipe_fkey FOREIGN KEY (pais) REFERENCES pais (nome)
 )
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.equipe
 	OWNER to postgres;
 	
-/*CREATE TABLE IF NOT EXISTS public.uniforme
+CREATE TABLE IF NOT EXISTS public.uniforme
 (
 	numero integer NOT NULL,
 	cor_camisa character varying (80) COLLATE pg_catalog."default",
@@ -26,19 +28,18 @@ TABLESPACE pg_default;
 ALTER TABLE IF EXISTS public.uniforme
 	OWNER to postgres;
 
-/*CREATE TABLE IF NOT EXISTS public.pais
+CREATE TABLE IF NOT EXISTS public.pais
 (
-	id integer NOT NULL,
 	nome character varying (100) COLLATE pg_catalog."default",
 	continente character varying (100) COLLATE pg_catalog."default",
 	populacao integer NOT NULL,
 	condicao character varying (80) COLLATE pg_catalog."default",
-	CONSTRAINT pais_pkey PRIMARY KEY (id)
+	CONSTRAINT pais_pkey PRIMARY KEY (nome)
 )
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.pais
-	OWNER to postgres;*/
+	OWNER to postgres;
 
 CREATE TABLE IF NOT EXISTS public.jogador
 (
@@ -61,6 +62,9 @@ CREATE TABLE IF NOT EXISTS public.partida
 	placar character varying (5) COLLATE pg_catalog."default",
 	juiz character varying (100) COLLATE pg_catalog."default",
 	nome_campo character varying (80) COLLATE pg_catalog."default",
+	CONSTRAINT equipe1_pkey PRIMARY KEY (equipe1),
+	CONSTRAINT equipe2_pkey PRIMARY KEY (equipe2),
+	CONSTRAINT nome_campo_pkey PRIMARY KEY (nome_campo),
 	CONSTRAINT partida_equipe1_fkey FOREIGN KEY (equipe1) REFERENCES equipe (nome),
 	CONSTRAINT partida_equipe2_fkey FOREIGN KEY (equipe2) REFERENCES equipe (nome),
 	CONSTRAINT partida_nome_campo_fkey FOREIGN KEY (nome_campo) REFERENCES campo (nome_campo)
@@ -74,9 +78,9 @@ CREATE TABLE IF NOT EXISTS public.campo
 (
 	nome_campo character varying (10) COLLATE pg_catalog."default",
 	cidade_campo character varying (10) COLLATE pg_catalog."default",
-	CONSTRAINT campo_pkey PRIMARY KEY (nome_campo)
+	CONSTRAINT nome_campo_pkey PRIMARY KEY (nome_campo)
 )
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.campo
-	OWNER to postgres;*/
+	OWNER to postgres;
