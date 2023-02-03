@@ -1,4 +1,3 @@
-
 drop table equipe;
  create table equipe (
     id numeric,
