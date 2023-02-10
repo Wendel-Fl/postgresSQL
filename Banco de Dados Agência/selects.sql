@@ -156,21 +156,30 @@ INNER JOIN filial fl ON fl.emp_codigo = emp.emp_codigo
 WHERE fl.filial_local = 'Curitiba'
 
 -- Liste o nome completo dos funcionários que dirigiram todos os carros que o funcionário Paulo Ferreira dirigiu.
-SELECT primeiro_nome || ' ' || sobrenome AS nome
+SELECT DISTINCT primeiro_nome || ' ' || sobrenome AS nome
 FROM funcionario fn
 INNER JOIN dirige dg ON dg.fun_codigo = fn.fun_codigo
-WHERE dg.data = CURRENT_DATE	
-
-
-SELECT primeiro_nome || ' ' || sobrenome AS nome
-FROM funcionario fn
-INNER JOIN dirige dg ON dg.fun_codigo = fn.fun_codigo
-WHERE dg.car_chassi = '01CCCC3888WP692161' AND dg.data = CURRENT_DATE
+WHERE dg.data = CURRENT_DATE
 
 -- Liste o código, o nome do funcionário e sua respectiva quantidade de dependentes, para funcionários do sexo masculino que possuam mais do que um dependente.
-SELECT f.fun_codigo AS cod, f.primeiro_nome || ' ' || sobrenome AS nome, COUNT(*) AS qtd_dep
+SELECT f.fun_codigo AS cod, f.primeiro_nome || ' ' || sobrenome AS nome
 FROM funcionario f
 INNER JOIN dependente dp ON f.fun_codigo = dp.fun_codigo
 WHERE f.fun_sexo = 'm'
 GROUP BY f.fun_codigo
 HAVING COUNT(*) > 1
+
+--Gustavo
+SELECT DISTINCT f.fun_codigo, primeiro_nome || ' '||sobrenome AS nome, COUNT(*)
+FROM dependente dp
+INNER JOIN funcionario f ON f.fun_codigo = dp.fun_codigo
+WHERE f.fun_sexo='m'
+GROUP BY f.fun_codigo
+HAVING COUNT(dp.fun_codigo) > 1
+
+SELECT f.fun_codigo AS cod, f.primeiro_nome || ' ' || sobrenome AS nome, COUNT(dp.fun_codigo)
+FROM funcionario f, dependente dp
+WHERE f.fun_sexo = 'm'
+AND f.fun_codigo = dp.fun_codigo
+GROUP BY f.fun_codigo
+HAVING COUNT(dp.fun_codigo) > 1

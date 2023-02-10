@@ -634,9 +634,9 @@ INSERT INTO valor_locacao VALUES (TO_DATE('01/01/2005', 'MM/DD/YYYY'),2003,'Pali
 INSERT INTO valor_locacao VALUES (TO_DATE('01/01/2005', 'MM/DD/YYYY'),2004,'Gol', 85);
 INSERT INTO valor_locacao VALUES (TO_DATE('01/01/2005', 'MM/DD/YYYY'),2004,'Palio', 85);
 
-/*INSERT INTO dirige (car_chassi, fun_codigo, DATA, nro_horas) VALUES ('03WZZZ3888WP192116', 55, CURRENT_DATE, 2);
+INSERT INTO dirige (car_chassi, fun_codigo, DATA, nro_horas) VALUES ('03WZZZ3888WP192116', 55, CURRENT_DATE, 2);
 INSERT INTO dirige (car_chassi, fun_codigo, DATA, nro_horas) VALUES ('03WZZZ3888WP192116', 100, CURRENT_DATE, 2);
 INSERT INTO carro values ('01CCCC3888WP692161', 'Teste', 2010, 2);
 INSERT INTO dirige (car_chassi, fun_codigo, DATA, nro_horas) VALUES ('01CCCC3888WP692161', 20, CURRENT_DATE, 2);
-INSERT INTO dirige (car_chassi, fun_codigo, DATA, nro_horas) VALUES ('01CCCC3888WP692161', 100, CURRENT_DATE, 2);*/
+INSERT INTO dirige (car_chassi, fun_codigo, DATA, nro_horas) VALUES ('01CCCC3888WP692161', 100, CURRENT_DATE, 2);
 
