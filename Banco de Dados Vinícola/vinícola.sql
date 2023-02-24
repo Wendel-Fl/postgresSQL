@@ -26,7 +26,7 @@ CREATE TABLE vinho
 	ano_vinho integer,
 	descrição_vinho varchar (255),
 	preço_vinho double precision,
-	vinícola_id integer  REFERENCES vinícola(vinícola_id)
+	vinícola_id integer REFERENCES vinícola(vinícola_id)
 );
 
 INSERT INTO região (nome_região,mapa_região,descrição_região) values ('Toscana','mapa 1','No centro da Itália é cortado pelos Apeninos, uma cadeia montanhosa que se estende por todo o comprimento do território italiano.');
@@ -44,26 +44,3 @@ INSERT INTO vinho (vinho_id,nome_vinho,tipo_vinho,preço_vinho,vinícola_id) VAL
 INSERT INTO vinho (vinho_id,nome_vinho,tipo_vinho,preço_vinho,vinícola_id) VALUES (48,'Fernanda','tinto',7.00,2); 
 INSERT INTO vinho (vinho_id,nome_vinho,tipo_vinho,preço_vinho,vinícola_id) VALUES (13,'Gabriela','tinto',397.00,3); 
 INSERT INTO vinho (vinho_id,nome_vinho,tipo_vinho,preço_vinho,vinícola_id) VALUES (12,'Helena','branco',333.00,3); 
-
-
-SELECT * FROM região;
-
-SELECT região_id, nome_região FROM região WHERE nome_região LIKE 'M%' AND região_id >= 2 AND
-mapa_região IS NOT NULL;
-
-SELECT preço_vinho
-FROM vinho
-WHERE tipo_vinho = 'tinto'
-UNION
-SELECT preço_vinho
-FROM vinho
-WHERE tipo_vinho = 'branco';
-
-
-SELECT nome_vinícola, nome_região
-FROM vinícola, região
-WHERE vinícola.região_id = região.região_id;
-
-
-
-

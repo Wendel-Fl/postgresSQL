@@ -81,14 +81,11 @@ INNER JOIN aluga al ON cl.cli_codigo = al.cli_codigo
 INNER JOIN carro cr ON cr.emp_codigo = 2
 GROUP BY emp.emp_nome, cl.cli_nome, cl.cli_telefone, cr.car_modelo
 
-SELECT emp.emp_nome, cl.cli_nome, cl.cli_telefone, cr.car_modelo
-FROM empresa emp, cliente cl, carro cr
-WHERE cr.emp_codigo = 2
-GROUP BY emp.emp_nome, cl.cli_nome, cl.cli_telefone, cr.car_modelo
-
-SELECT COUNT(*)
-FROM cliente cl
-WHERE cl.emp_codigo = 2
+		-- Usando WHERE
+		SELECT emp.emp_nome, cl.cli_nome, cl.cli_telefone, cr.car_modelo
+		FROM empresa emp, cliente cl, carro cr
+		WHERE cr.emp_codigo = 2
+		GROUP BY emp.emp_nome, cl.cli_nome, cl.cli_telefone, cr.car_modelo
 
 -- Listar todas as empresas (todos os dados da empresa) com os dados de suas filiais → Join com empresa filial
 SELECT *
@@ -124,62 +121,111 @@ AND NOT EXISTS
 FROM dependente dp
 WHERE fn.fun_codigo = dp.fun_codigo)
 
-SELECT DISTINCT fn.primeiro_nome, cr.car_chassi, cr.car_ano, dg.data
-FROM funcionario fn
-INNER JOIN dirige dg ON fn.fun_codigo = dg.fun_codigo
-INNER JOIN carro cr ON cr.emp_codigo = 2
-WHERE cr.car_modelo = 'Gol'
-AND NOT EXISTS
-(SELECT dp.dep_nome
-FROM dependente dp
-WHERE fn.fun_codigo = dp.fun_codigo)
-
 -- Liste todos os dados das empresas que têm filiais na cidade de Curitiba - resolva a consulta usando IN, usando EXISTS e usando JOIN
-SELECT *
-FROM empresa emp
-WHERE emp.emp_codigo IN
-(SELECT fl.emp_codigo
-FROM filial fl
- WHERE fl.filial_local = 'Curitiba')
+		
+		-- Usando IN
+		SELECT *
+		FROM empresa emp
+		WHERE emp.emp_codigo IN
+		(SELECT fl.emp_codigo
+		FROM filial fl
+		 WHERE fl.filial_local = 'Curitiba')
 
-SELECT *
-FROM empresa emp
-WHERE EXISTS 
-(SELECT 1
- FROM filial fl
- WHERE fl.emp_codigo = emp.emp_codigo
- AND filial_local = 'Curitiba')
- 
-SELECT emp.emp_codigo, emp.emp_nome, emp.emp_endereco, emp.emp_telefone
-FROM empresa emp
-INNER JOIN filial fl ON fl.emp_codigo = emp.emp_codigo
-WHERE fl.filial_local = 'Curitiba'
+		-- Usando EXISTS
+		SELECT *
+		FROM empresa emp
+		WHERE EXISTS 
+		(SELECT 1
+		 FROM filial fl
+		 WHERE fl.emp_codigo = emp.emp_codigo
+		 AND filial_local = 'Curitiba')
+
+		-- Usando JOIN
+		SELECT emp.emp_codigo, emp.emp_nome, emp.emp_endereco, emp.emp_telefone
+		FROM empresa emp
+		INNER JOIN filial fl ON fl.emp_codigo = emp.emp_codigo
+		WHERE fl.filial_local = 'Curitiba'
 
 -- Liste o nome completo dos funcionários que dirigiram todos os carros que o funcionário Paulo Ferreira dirigiu.
+-- letra a
+SELECT primeiro_nome || ' ' || sobrenome AS nome
+FROM funcionario fn
+INNER JOIN dirige dg ON dg.fun_codigo = fn.fun_codigo
+WHERE dg.data = CURRENT_DATE
+
+-- letra b
+SELECT primeiro_nome || ' ' || sobrenome AS nome
+FROM funcionario fn
+INNER JOIN dirige dg ON dg.fun_codigo = fn.fun_codigo
+WHERE dg.data = CURRENT_DATE
+
+-- letra c
 SELECT DISTINCT primeiro_nome || ' ' || sobrenome AS nome
 FROM funcionario fn
 INNER JOIN dirige dg ON dg.fun_codigo = fn.fun_codigo
 WHERE dg.data = CURRENT_DATE
 
 -- Liste o código, o nome do funcionário e sua respectiva quantidade de dependentes, para funcionários do sexo masculino que possuam mais do que um dependente.
-SELECT f.fun_codigo AS cod, f.primeiro_nome || ' ' || sobrenome AS nome
-FROM funcionario f
-INNER JOIN dependente dp ON f.fun_codigo = dp.fun_codigo
+SELECT f.fun_codigo AS cod, f.primeiro_nome || ' ' || sobrenome AS nome, COUNT(*) AS qtd_dep
+FROM dependente dp
+INNER JOIN funcionario f ON f.fun_codigo = dp.fun_codigo
 WHERE f.fun_sexo = 'm'
 GROUP BY f.fun_codigo
 HAVING COUNT(*) > 1
 
---Gustavo
-SELECT DISTINCT f.fun_codigo, primeiro_nome || ' '||sobrenome AS nome, COUNT(*)
-FROM dependente dp
-INNER JOIN funcionario f ON f.fun_codigo = dp.fun_codigo
-WHERE f.fun_sexo='m'
-GROUP BY f.fun_codigo
-HAVING COUNT(dp.fun_codigo) > 1
+-- Liste o nome e o sexo dos funcionários que têm mais de 2 dependentes
+SELECT primeiro_nome || ' ' || sobrenome AS nome, fun_sexo AS sexo, COUNT(*)
+FROM funcionario fn
+INNER JOIN dependente dp ON fn.fun_codigo = dp.fun_codigo
+GROUP BY nome, sexo
+HAVING COUNT(*) > 2
 
-SELECT f.fun_codigo AS cod, f.primeiro_nome || ' ' || sobrenome AS nome, COUNT(dp.fun_codigo)
-FROM funcionario f, dependente dp
-WHERE f.fun_sexo = 'm'
-AND f.fun_codigo = dp.fun_codigo
-GROUP BY f.fun_codigo
-HAVING COUNT(dp.fun_codigo) > 1
+/* Liste o nome e a categoria de todas as pessoas cadastradas no banco de dados da empresa: clientes funcionários e dependentes.
+	A lista deve conter: nome e categoria, e se for dependente, deve conter também o nome do funcionário.
+	Ex:
+		João - Cliente
+		Maria - Dependente de Carlos
+		Carlos - Motorista
+		Luiz - Secretário
+*/
+
+
+-- Liste o nome dos funcionários sem dependentes
+SELECT fun_codigo AS codigo, primeiro_nome || ' ' || sobrenome AS nome
+FROM funcionario fn
+WHERE NOT EXISTS (
+	SELECT *
+	FROM dependente dp
+	WHERE dp.fun_codigo = fn.fun_codigo
+)
+
+-- Liste o modelo e ano dos carros que nunca foram alugados
+SELECT car.car_modelo, car.car_ano
+FROM carro car
+LEFT JOIN aluga al1 ON car.car_chassi = al1.car_chassi
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM aluga al2
+	WHERE car.car_chassi = al2.car_chassi
+)
+
+-- Liste o nome e a classe dos motoristas que nunca dirigiram carros
+SELECT primeiro_nome || ' ' || sobrenome AS nome, classe
+FROM motorista mt
+LEFT JOIN funcionario fn ON mt.fun_codigo = fn.fun_codigo
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM dirige dg
+	WHERE mt.fun_codigo = dg.fun_codigo
+)
+
+-- Liste o nome, carteira e classe dos motoristas que dirigiram mais de 2 carros diferentes
+SELECT primeiro_nome || ' ' || sobrenome AS nome, num_carteira, classe, COUNT(DISTINCT car_chassi)
+FROM funcionario fn
+INNER JOIN motorista mt ON fn.fun_codigo = mt.fun_codigo
+INNER JOIN dirige dg ON mt.fun_codigo = dg.fun_codigo
+GROUP BY nome, num_carteira, classe
+ORDER BY nome
+
+SELECT COUNT(DISTINCT car_chassi)
+FROM dirige
