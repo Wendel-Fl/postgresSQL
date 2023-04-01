@@ -1,49 +1,4 @@
 SELECT *
-FROM cliente
-
-SELECT *
-FROM cliente_parcelas_pendentes
-
-SELECT *
-FROM estoque
-
-SELECT *
-FROM estoque_historico
-
-SELECT *
-FROM estoque_historico_resp
-
-SELECT *
-FROM funcionario_gerente
-
-SELECT *
-FROM funcionario_gerente_conta
-
-SELECT *
-FROM funcionario_vendedor
-
-SELECT *
-FROM funcionario_vendedor_comissao
-
-SELECT *
-FROM funcionario_vendedor_conta
-
-SELECT *
-FROM loja
-
-SELECT *
-FROM parcelas
-
-SELECT *
-FROM pessoa
-
-SELECT *
-FROM produto
-
-SELECT *
-FROM produto_estoque
-
-SELECT *
 FROM venda
 
 SELECT *
